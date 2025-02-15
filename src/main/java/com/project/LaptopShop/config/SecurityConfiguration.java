@@ -24,6 +24,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
+import com.project.LaptopShop.util.constant.RoleEnum;
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
@@ -34,34 +35,28 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http
-    // CustomAuthenticationEntryPoint customAuthenticationEntryPoint
-    ) throws Exception {
-        String[] whiteList = {
-                "/", "/api/v1/auth/login", "/api/v1/auth/refresh", "/storage/**",
-                "/api/v1/auth/register", "/v3/api-docs/**",
-                "/swagger-ui/**",
-                "/swagger-ui.html", "/api/v1/tybel"
-        };
-        String[] listGET = {
-                "/api/v1/companies/**", "/api/v1/jobs/**", "/api/v1/skills/**"
-        };
+    public SecurityFilterChain filterChain(HttpSecurity http,
+            CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+            CustomAccessDeniedHandler customAccessDeniedHandler) throws Exception {
+        System.out.println(RoleEnum.ADMIN.name());
         http
                 .csrf(c -> c.disable())
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers(whiteList)
-                                .permitAll()
-                                .requestMatchers(HttpMethod.GET, listGET)
-                                .permitAll()
+                                .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/v1/admin/**").permitAll()
                                 .anyRequest().permitAll())
                 .formLogin(f -> f.disable())
                 // .exceptionHandling(
                 // e -> e.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                // .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
+                // .accessDeniedHandler(customAccessDeniedHandler)
                 .cors(Customizer.withDefaults())
-                .oauth2ResourceServer(oath2 -> oath2.jwt(Customizer.withDefaults()))
-                // .authenticationEntryPoint(customAuthenticationEntryPoint))
+                .oauth2ResourceServer(oath2 -> oath2.jwt(
+                        jwt -> jwt
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler))
                 .sessionManagement(sesstion -> sesstion.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
 
@@ -70,8 +65,8 @@ public class SecurityConfiguration {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("permission");
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("role");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
