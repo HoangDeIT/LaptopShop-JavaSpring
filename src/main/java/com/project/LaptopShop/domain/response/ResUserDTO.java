@@ -10,12 +10,16 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class RegisterDTO {
+public class ResUserDTO {
     private long id;
     private String userName;
     private String email;
-    private Instant createdAt;
-    private String createdBy;
     private RoleEnum role;
     private TypeEnum typeEnum;
+    private String image;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private String createdBy;
+    private String updatedBy;
+
 }

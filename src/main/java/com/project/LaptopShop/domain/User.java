@@ -43,6 +43,8 @@ public class User {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
+    private boolean deleted = false;
+    private Instant deletedAt;
 
     @PrePersist
     public void handleBeforeCreate() {
