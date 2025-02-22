@@ -15,7 +15,7 @@ public class ResUserDTO {
     private String userName;
     private String email;
     private RoleEnum role;
-    private TypeEnum typeEnum;
+    private TypeEnum type;
     private String image;
     private Instant createdAt;
     private Instant updatedAt;

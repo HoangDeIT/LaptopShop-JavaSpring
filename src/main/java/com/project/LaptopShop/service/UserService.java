@@ -82,7 +82,7 @@ public class UserService {
         registerDTO.setUserName(user.getUserName());
         registerDTO.setEmail(user.getEmail());
         registerDTO.setRole(user.getRole());
-        registerDTO.setTypeEnum(user.getType());
+        registerDTO.setType(user.getType());
         registerDTO.setImage(user.getImage());
         registerDTO.setCreatedAt(user.getCreatedAt());
         registerDTO.setUpdatedAt(user.getUpdatedAt());
@@ -96,15 +96,23 @@ public class UserService {
         FilterSpecification<User> spec1 = filterSpecificationConverter.convert(node);
         spec = spec.and(spec1);
         Page<User> pageUser = this.userRepository.findAll(spec, pageable);
+
+        // Adjust page number if it exceeds total pages
+        int totalPages = pageUser.getTotalPages();
+        int pageNumber = Math.min(pageable.getPageNumber(), totalPages - 1);
+        if (pageNumber != pageable.getPageNumber()) {
+            pageable = pageable.withPage(totalPages - 1);
+            pageUser = this.userRepository.findAll(spec, pageable);
+        }
         ResultPaginationDTO res = new ResultPaginationDTO();
         ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
         meta.setPage(pageable.getPageNumber() + 1);
         meta.setPageSize(pageable.getPageSize());
         meta.setPages(pageUser.getTotalPages());
-        meta.setTotal(pageUser.getNumberOfElements());
+        meta.setTotal(pageUser.getTotalElements());
         res.setMeta(meta);
-        res.setResult(res);
-        List<ResUserDTO> users = pageUser.getContent().stream().map(item -> this.getUser(item)).toList();
+
+        List<ResUserDTO> users = pageUser.getContent().stream().map(this::getUser).toList();
         res.setResult(users);
         return res;
     }

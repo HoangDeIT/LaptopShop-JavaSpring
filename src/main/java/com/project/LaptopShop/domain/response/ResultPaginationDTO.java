@@ -15,7 +15,7 @@ public class ResultPaginationDTO {
         private int page;
         private int pageSize;
         private int pages;
-        private int total;
+        private long total;
     }
 
 }
