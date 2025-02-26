@@ -67,12 +67,13 @@ public class FactoryService {
         return factoryRepository.save(factory);
     }
 
-    public Factory deleteFactory(long id) throws IdInvalidException {
+    public void deleteFactory(long id) throws IdInvalidException {
         Factory factory = factoryRepository.findById(id)
                 .orElseThrow(() -> new IdInvalidException("ID factory not found"));
         factory.setDeleted(true);
         factory.setDeletedAt(Instant.now());
-        return this.factoryRepository.save(factory);
+        this.factoryRepository.save(factory);
+
     }
 
     @Transactional

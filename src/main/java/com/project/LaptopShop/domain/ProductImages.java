@@ -2,6 +2,7 @@ package com.project.LaptopShop.domain;
 
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.LaptopShop.util.SecurityUtil;
 
 import jakarta.persistence.Entity;
@@ -29,6 +30,7 @@ public class ProductImages {
     private String image;
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonIgnoreProperties(value = { "images" })
     private Product product;
     private Instant createdAt;
     private Instant updatedAt;

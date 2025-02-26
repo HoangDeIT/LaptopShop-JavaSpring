@@ -1,41 +1,40 @@
 package com.project.LaptopShop.domain;
 
 import java.time.Instant;
-import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.LaptopShop.util.SecurityUtil;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Table(name = "factories")
 @Setter
 @Getter
-public class Factory {
+@Entity
+@Table(name = "order_details")
+public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @NotNull(message = "Name is required")
-    private String name;
-    private String image;
-    private String laptopImage;
-    @NotNull(message = "Country is required")
-    private String country;
-    @OneToMany(mappedBy = "factory", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonIgnoreProperties(value = { "factory" })
-    private List<Product> products;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    @JsonIgnoreProperties(value = { "orderDetails", "images" })
+    private Product product;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    @JsonIgnoreProperties(value = { "orderDetails" })
+    private Order order;
+    private int quantity;
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;

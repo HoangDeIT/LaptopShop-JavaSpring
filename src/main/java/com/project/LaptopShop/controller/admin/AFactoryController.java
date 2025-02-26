@@ -10,6 +10,7 @@ import com.project.LaptopShop.domain.Factory;
 import com.project.LaptopShop.domain.response.ResultPaginationDTO;
 import com.project.LaptopShop.service.FactoryService;
 import com.project.LaptopShop.service.FileService;
+import com.project.LaptopShop.util.error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
@@ -41,6 +42,7 @@ public class AFactoryController {
     @PostMapping
     public ResponseEntity<Factory> createFactory(
             @RequestParam("file") MultipartFile file,
+            @RequestParam("fileLaptop") MultipartFile fileLaptop,
             @RequestParam("name") String name,
             @RequestParam("country") String country) throws URISyntaxException, IOException {
         // Lưu file
@@ -49,6 +51,8 @@ public class AFactoryController {
         factory.setName(name);
         this.fileService.createUploadFolder("factory");
         String fileName = this.fileService.store(file, "factory");
+        String fileNameL = this.fileService.store(fileLaptop, "factory");
+        factory.setLaptopImage(fileNameL);
         factory.setImage(fileName);
         // Lưu factory
         return ResponseEntity.status(HttpStatus.CREATED).body(this.factoryService.saveFactory(factory));
@@ -59,16 +63,16 @@ public class AFactoryController {
         return ResponseEntity.ok().body(this.factoryService.fetchFactories(pageable, spec));
     }
 
-    // @DeleteMapping("/{id}")
-    // public ResponseEntity<Void> deleteFactory(@PathVariable("id") long id) {
-    // this.factoryService.deleteFactory(id);
-    // return ResponseEntity.ok().body(null);
-    // }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFactory(@PathVariable("id") long id) throws IdInvalidException {
+        this.factoryService.deleteFactory(id);
+        return ResponseEntity.ok().body(null);
+    }
 
-    // @PostMapping("/{id}")
-    // public ResponseEntity<Factory> rollbackFactory(@PathVariable("id") long id) {
-    // if (id == 0)
-    // return ResponseEntity.badRequest().build();
-    // return ResponseEntity.ok().body(this.factoryService.rollbackDelete(id));
-    // }
+    @PostMapping("/{id}")
+    public ResponseEntity<Factory> rollbackFactory(@PathVariable("id") long id) throws IdInvalidException {
+        if (id == 0)
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().body(this.factoryService.rollbackDelete(id));
+    }
 }

@@ -1,11 +1,17 @@
 package com.project.LaptopShop.service;
 
+import java.time.Instant;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.LaptopShop.domain.Product;
+import com.project.LaptopShop.domain.User;
 import com.project.LaptopShop.domain.response.ResultPaginationDTO;
 import com.project.LaptopShop.repository.ProductRepository;
 import com.project.LaptopShop.util.error.IdInvalidException;
@@ -59,5 +65,15 @@ public class ProductService {
 
     public Product getProductById(long id) throws IdInvalidException {
         return this.productRepository.findById(id).orElseThrow(() -> new IdInvalidException("ID product not found"));
+    }
+
+    @Scheduled(fixedDelay = 20000)
+    @Transactional
+    public void hardDeleteExpiredUsers() {
+        Instant cutoffTime = Instant.now().minusSeconds(20);
+        List<Product> productDelete = this.productRepository.findByDeletedTrueAndDeletedAtBefore(cutoffTime);
+        if (!productDelete.isEmpty()) {
+            this.productRepository.deleteAll(productDelete);
+        }
     }
 }

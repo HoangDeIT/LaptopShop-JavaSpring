@@ -82,6 +82,7 @@ public class Product {
     private String os;
     @NotBlank
     private String gpu;
+
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
