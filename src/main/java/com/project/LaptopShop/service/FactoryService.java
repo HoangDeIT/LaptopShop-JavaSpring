@@ -46,7 +46,7 @@ public class FactoryService {
         // Điều chỉnh số trang nếu vượt quá tổng số trang
         int totalPages = pageFactory.getTotalPages();
         int pageNumber = Math.min(pageable.getPageNumber(), totalPages - 1);
-        if (pageNumber != pageable.getPageNumber()) {
+        if (pageNumber != pageable.getPageNumber() && totalPages != 0) {
             pageable = pageable.withPage(totalPages - 1);
             pageFactory = this.factoryRepository.findAll(spec, pageable);
         }

@@ -112,4 +112,30 @@ public class CartService {
 
         }
     }
+
+    public Cart addOneQuantityCart(long id) throws IdInvalidException {
+        Cart cart = this.cartRepository.findById(id).get();
+        cart.setQuantity(cart.getQuantity() + 1);
+        return this.cartRepository.save(cart);
+    }
+
+    @Transactional
+    public Cart subOneQuantityCart(long id) throws IdInvalidException {
+        Cart cart = this.cartRepository.findById(id).get();
+        cart.setQuantity(cart.getQuantity() - 1);
+        if (cart.getQuantity() <= 0) {
+            User user = cart.getUser();
+            user.getCarts().remove(cart);
+            // this.cartRepository.deleteById(id);
+        }
+        return this.cartRepository.save(cart);
+    }
+
+    public void deleteCart(long id) throws IdInvalidException {
+        Cart cart = this.cartRepository.findById(id).get();
+        User user = cart.getUser();
+        user.getCarts().remove(cart);
+        this.cartRepository.save(cart);
+
+    }
 }

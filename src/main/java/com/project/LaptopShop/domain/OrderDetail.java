@@ -32,7 +32,7 @@ public class OrderDetail {
     private Product product;
     @ManyToOne
     @JoinColumn(name = "order_id")
-    @JsonIgnoreProperties(value = { "orderDetails" })
+    @JsonIgnoreProperties(value = { "orderDetails", "factory" })
     private Order order;
     private int quantity;
     private Instant createdAt;

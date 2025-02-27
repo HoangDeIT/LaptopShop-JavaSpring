@@ -34,7 +34,7 @@ public class Order {
     private long id;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnoreProperties(value = { "orders" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "orders", "carts" }, allowSetters = true)
     private User user;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties(value = { "order" })

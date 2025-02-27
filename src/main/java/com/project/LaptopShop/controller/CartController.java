@@ -39,26 +39,41 @@ public class CartController {
     // return new String();
     // }
     @PostMapping
-    public String postMethodName(@RequestParam("id") long id,
+    public ResponseEntity<Void> postMethodName(@RequestParam("id") long id,
             @RequestParam("quantity") int quantity) throws IdInvalidException {
         String username = SecurityUtil.getCurrentUserLogin(); // SecurityUtil
         User user = this.userService.getUserByUsername(username);
         if (user != null) {
             this.cartService.addProductToCart(user, id, quantity);
         }
-        String entity = "OK";
-        return entity;
+        return ResponseEntity.ok().body(null);
     }
 
     @PostMapping("/update")
-    public String postMethodName(@RequestBody User user) throws IdInvalidException {
+    public ResponseEntity<Void> postMethodName(@RequestBody User user) throws IdInvalidException {
         String username = SecurityUtil.getCurrentUserLogin();
         User userDB = this.userService.getUserByUsername(username);
         if (userDB != null) {
             this.cartService.updateProductToCart(userDB, user);
         }
-        String entity = "OK";
-        return entity;
+        return ResponseEntity.ok().body(null);
     }
 
+    @PostMapping("/add")
+    public ResponseEntity<Cart> postMethodName(@RequestParam("id") long id) throws IdInvalidException {
+
+        return ResponseEntity.ok(this.cartService.addOneQuantityCart(id));
+    }
+
+    @PostMapping("/sub")
+    public ResponseEntity<Cart> subCart(@RequestParam("id") long id) throws IdInvalidException {
+
+        return ResponseEntity.ok(this.cartService.subOneQuantityCart(id));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Void> deleteCart(@RequestParam("id") long id) throws IdInvalidException {
+        this.cartService.deleteCart(id);
+        return ResponseEntity.ok().body(null);
+    }
 }
