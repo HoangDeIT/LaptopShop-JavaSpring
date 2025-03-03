@@ -14,6 +14,8 @@ import com.project.LaptopShop.domain.User;
 import com.project.LaptopShop.domain.response.ResultPaginationDTO;
 import com.project.LaptopShop.repository.CartRepository;
 import com.project.LaptopShop.repository.FactoryRepository;
+import com.project.LaptopShop.util.SecurityUtil;
+import com.project.LaptopShop.util.constant.TypeEnum;
 import com.project.LaptopShop.util.error.IdInvalidException;
 import com.turkraft.springfilter.converter.FilterSpecification;
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
@@ -137,5 +139,21 @@ public class CartService {
         user.getCarts().remove(cart);
         this.cartRepository.save(cart);
 
+    }
+
+    public List<Cart> getCart(List<Long> ids) throws IdInvalidException {
+        return this.cartRepository.findAllById(ids);
+    }
+
+    public boolean isCartInUser(List<Long> ids) {
+        String username = SecurityUtil.getCurrentUserLogin();
+        TypeEnum type = SecurityUtil.getCurrentUserType();
+        User user = this.userService.getUserByUserNameAndType(username, type);
+        List<Long> idsUser = user.getCarts().stream().map(Cart::getId).toList();
+        return idsUser.containsAll(ids);
+    }
+
+    public Cart getCartById(long id) throws IdInvalidException {
+        return this.cartRepository.findById(id).get();
     }
 }

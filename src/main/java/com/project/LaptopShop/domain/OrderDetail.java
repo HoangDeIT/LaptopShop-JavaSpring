@@ -28,11 +28,13 @@ public class OrderDetail {
     private long id;
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @JsonIgnoreProperties(value = { "orderDetails", "images" })
+    @JsonIgnoreProperties(value = { "orderDetails", "images", "createdAt", "updatedAt", "createdBy", "updatedBy",
+            "deleted", "deletedAt" })
     private Product product;
     @ManyToOne
     @JoinColumn(name = "order_id")
-    @JsonIgnoreProperties(value = { "orderDetails", "factory" })
+    @JsonIgnoreProperties(value = { "orderDetails", "factory", "createdAt", "updatedAt", "createdBy", "updatedBy",
+            "deleted", "deletedAt" })
     private Order order;
     private int quantity;
     private Instant createdAt;

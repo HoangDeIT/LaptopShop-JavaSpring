@@ -25,11 +25,13 @@ public class Cart {
     private long id;
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @JsonIgnoreProperties(value = { "carts", "images" })
+    @JsonIgnoreProperties(value = { "carts", "images", "createdAt", "updatedAt", "createdBy", "updatedBy", "deleted",
+            "deletedAt" })
     private Product product;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnoreProperties(value = { "carts" })
+    @JsonIgnoreProperties(value = { "carts", "orders", "createdAt", "updatedAt", "createdBy", "updatedBy", "deleted",
+            "deletedAt" })
     private User user;
     private int quantity;
 

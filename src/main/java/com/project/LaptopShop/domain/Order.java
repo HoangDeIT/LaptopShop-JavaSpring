@@ -34,10 +34,12 @@ public class Order {
     private long id;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnoreProperties(value = { "orders", "carts" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "orders", "carts", "createdAt", "updatedAt", "createdBy", "updatedBy", "deleted",
+            "deletedAt" }, allowSetters = true)
     private User user;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties(value = { "order" })
+    @JsonIgnoreProperties(value = { "order", "createdAt", "updatedAt", "createdBy", "updatedBy", "deleted",
+            "deletedAt" })
     private List<OrderDetail> orderDetails;
     private double totalPrice;
     @NotBlank
@@ -46,6 +48,7 @@ public class Order {
     private String receiverPhone;
     @Enumerated(EnumType.STRING)
     private StatusEnum status = StatusEnum.PENDING;
+    private String message;
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;

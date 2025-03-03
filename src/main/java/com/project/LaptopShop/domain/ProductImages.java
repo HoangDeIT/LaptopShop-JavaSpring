@@ -30,7 +30,8 @@ public class ProductImages {
     private String image;
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @JsonIgnoreProperties(value = { "images" })
+    @JsonIgnoreProperties(value = { "images", "createdAt", "updatedAt", "createdBy", "updatedBy", "deleted",
+            "deletedAt" })
     private Product product;
     private Instant createdAt;
     private Instant updatedAt;

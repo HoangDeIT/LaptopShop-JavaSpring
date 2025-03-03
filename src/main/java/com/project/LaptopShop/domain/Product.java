@@ -45,7 +45,8 @@ public class Product {
     @DecimalMin(value = "0", inclusive = false, message = "Price phải lớn hơn 0")
     private double price;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties(value = { "product" })
+    @JsonIgnoreProperties(value = { "product", "createdAt", "updatedAt", "createdBy", "updatedBy", "deleted",
+            "deletedAt" })
     private List<ProductImages> images;
     private String mainImage;
     @Column(columnDefinition = "MEDIUMTEXT")
@@ -57,12 +58,13 @@ public class Product {
     private String shortDesc;
 
     @NotBlank
-    @Min(value = 1, message = "Số lượng phải lớn 1")
+    @Min(value = 0, message = "Số lượng phải lớn 0")
     private String quantity;
     private long sold;
     @ManyToOne
     @JoinColumn(name = "factory_id")
-    @JsonIgnoreProperties(value = { "products" })
+    @JsonIgnoreProperties(value = { "products", "createdAt", "updatedAt", "createdBy", "updatedBy", "deleted",
+            "deletedAt" })
     private Factory factory;
     @NotNull
     @Enumerated(EnumType.STRING)

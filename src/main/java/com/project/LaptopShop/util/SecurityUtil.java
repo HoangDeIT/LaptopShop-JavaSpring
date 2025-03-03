@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import com.project.LaptopShop.domain.User;
+import com.project.LaptopShop.util.constant.TypeEnum;
 
 @Service
 public class SecurityUtil {
@@ -45,6 +46,8 @@ public class SecurityUtil {
                 .expiresAt(validity)
                 .subject(authentication.getName())
                 .claim("role", currentUser.getRole().name())
+                .claim("type", currentUser.getType().name())
+
                 // .claim("user", dto)
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
@@ -78,6 +81,19 @@ public class SecurityUtil {
                 return null;
             return jwt.getSubject();
 
+        }
+        return null;
+    }
+
+    public static TypeEnum getCurrentUserType() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        if (securityContext.getAuthentication() != null) {
+            Jwt jwt = securityContext.getAuthentication().getPrincipal() instanceof Jwt
+                    ? (Jwt) securityContext.getAuthentication().getPrincipal()
+                    : null;
+            if (jwt == null)
+                return null;
+            return TypeEnum.valueOf(jwt.getClaimAsString("type"));
         }
         return null;
     }

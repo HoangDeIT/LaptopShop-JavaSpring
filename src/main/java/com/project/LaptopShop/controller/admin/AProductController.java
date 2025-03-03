@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -73,4 +74,33 @@ public class AProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.productService.saveProduct(product));
     }
 
+    @PatchMapping
+    public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(this.productService.saveProduct(product));
+    }
+
+    @PatchMapping("/upload-image")
+    public ResponseEntity<Product> updateProductImage(
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam(value = "files", required = false) List<MultipartFile> files,
+            @RequestParam("id") long id) throws URISyntaxException, IOException, IdInvalidException {
+        Product product = this.productService.getProductById(id);
+        this.fileService.createUploadFolder("product");
+        if (file != null) {
+            String fileName = this.fileService.store(file, "product");
+            product.setMainImage(fileName);
+        }
+        if (files != null) {
+            List<String> fileNames = this.fileService.storeMultipleFiles(files, "product");
+            List<ProductImages> imagesDB = product.getImages();
+            // imagesDB.clear();
+            for (String fileName1 : fileNames) {
+                ProductImages productImages = this.productImagesService.saveImageProduct(fileName1, product);
+                imagesDB.add(productImages);
+            }
+            product.setImages(imagesDB);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(this.productService.saveProduct(product));
+    }
 }

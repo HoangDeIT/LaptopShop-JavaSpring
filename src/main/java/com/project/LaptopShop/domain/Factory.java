@@ -34,7 +34,8 @@ public class Factory {
     @NotNull(message = "Country is required")
     private String country;
     @OneToMany(mappedBy = "factory", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonIgnoreProperties(value = { "factory" })
+    @JsonIgnoreProperties(value = { "factory", "createdAt", "updatedAt", "createdBy", "updatedBy", "deleted",
+            "deletedAt" })
     private List<Product> products;
     private Instant createdAt;
     private Instant updatedAt;

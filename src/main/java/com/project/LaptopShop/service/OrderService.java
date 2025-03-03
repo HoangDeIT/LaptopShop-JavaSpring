@@ -12,6 +12,7 @@ import com.project.LaptopShop.domain.response.ResultPaginationDTO;
 import com.project.LaptopShop.repository.OrderDetailRepository;
 import com.project.LaptopShop.repository.OrderRepository;
 import com.project.LaptopShop.util.SecurityUtil;
+import com.project.LaptopShop.util.constant.TypeEnum;
 import com.turkraft.springfilter.converter.FilterSpecification;
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 import com.turkraft.springfilter.parser.FilterParser;
@@ -36,7 +37,10 @@ public class OrderService {
     }
 
     public Order createOrder(Order order) {
-        return orderRepository.save(order);
+
+        Order entity = orderRepository.save(order);
+        // this.orderDetailRepository.saveAll(order.getOrderDetails());
+        return entity;
     }
 
     public void deleteOrder(long id) {
@@ -45,8 +49,8 @@ public class OrderService {
 
     public ResultPaginationDTO fetchOrder(Pageable pageable, Specification<Order> spec) {
         String username = SecurityUtil.getCurrentUserLogin();
-
-        User user = this.userService.getUserByUserName(username);
+        TypeEnum type = SecurityUtil.getCurrentUserType();
+        User user = this.userService.getUserByUserNameAndType(username, type);
         long idUser = user.getId();
         FilterNode node = filterParser.parse("deleted='" + false + "'");
         FilterNode node1 = filterParser.parse("user.id='" + idUser + "'");

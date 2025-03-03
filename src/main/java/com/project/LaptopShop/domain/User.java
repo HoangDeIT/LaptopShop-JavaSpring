@@ -46,10 +46,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private TypeEnum type;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties(value = { "user" })
+    @JsonIgnoreProperties(value = { "user", "createdAt", "updatedAt", "createdBy", "updatedBy", "deleted",
+            "deletedAt" })
     private List<Cart> carts;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties(value = { "user" })
+    @JsonIgnoreProperties(value = { "user", "createdAt", "updatedAt", "createdBy", "updatedBy", "deleted",
+            "deletedAt" })
     private List<Order> orders;
     private Instant createdAt;
     private Instant updatedAt;

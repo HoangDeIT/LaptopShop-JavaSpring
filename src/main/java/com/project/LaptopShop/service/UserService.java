@@ -36,14 +36,14 @@ public class UserService {
         this.filterSpecificationConverter = filterSpecificationConverter;
     }
 
-    public User getUserByUsername(String username) {
+    // public User getUserByUsername(String username) {
 
-        Optional<User> userOptional = this.userRepository.findByUserName(username);
-        if (userOptional.isPresent()) {
-            return userOptional.get();
-        }
-        return null;
-    }
+    // Optional<User> userOptional = this.userRepository.findByUserName(username);
+    // if (userOptional.isPresent()) {
+    // return userOptional.get();
+    // }
+    // return null;
+    // }
 
     public RegisterDTO registerUser(User user) {
         user = this.userRepository.save(user);
@@ -57,13 +57,13 @@ public class UserService {
         return registerDTO;
     }
 
-    public User getUserByUserName(String username) {
-        Optional<User> userOptional = this.userRepository.findByUserName(username);
-        if (userOptional.isPresent()) {
-            return userOptional.get();
-        }
-        return null;
-    }
+    // public User getUserByUserName(String username) {
+    // Optional<User> userOptional = this.userRepository.findByUserName(username);
+    // if (userOptional.isPresent()) {
+    // return userOptional.get();
+    // }
+    // return null;
+    // }
 
     public User getUserByUserNameAndType(String username, TypeEnum type) {
         Optional<User> userOptional = this.userRepository.findByUserNameAndType(username, type);
@@ -151,5 +151,9 @@ public class UserService {
         if (!usersToDelete.isEmpty()) {
             this.userRepository.deleteAll(usersToDelete);
         }
+    }
+
+    public User save(User user) {
+        return this.userRepository.save(user);
     }
 }

@@ -6,6 +6,7 @@ import com.project.LaptopShop.domain.User;
 import com.project.LaptopShop.domain.response.RegisterDTO;
 import com.project.LaptopShop.service.UserService;
 import com.project.LaptopShop.util.SecurityUtil;
+import com.project.LaptopShop.util.constant.TypeEnum;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,8 @@ public class UserController {
     @GetMapping
     public ResponseEntity<User> getHello() {
         String username = SecurityUtil.getCurrentUserLogin();
-        User user = this.userService.getUserByUsername(username);
+        TypeEnum type = SecurityUtil.getCurrentUserType();
+        User user = this.userService.getUserByUserNameAndType(username, type);
         return ResponseEntity.ok(user);
     }
 
