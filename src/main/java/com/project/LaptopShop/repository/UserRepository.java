@@ -22,4 +22,11 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     List<User> findByDeletedFalse(Pageable page, Specification<User> spec);
 
     Optional<User> findByUserNameAndType(String email, TypeEnum type);
+
+    Optional<User> findByEmailAndType(String email, TypeEnum type);
+
+    Optional<User> findByCodeAndExpiredAtBefore(String code, Instant tenMinutesAgo);
+
+    Optional<User> findByCodeAndExpiredAtAfter(String code, Instant tenMinutesAgo);
+
 }

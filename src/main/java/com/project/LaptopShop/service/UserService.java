@@ -73,6 +73,14 @@ public class UserService {
         return null;
     }
 
+    public User getUserByEmailAndType(String email, TypeEnum type) {
+        Optional<User> userOptional = this.userRepository.findByEmailAndType(email, type);
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        }
+        return null;
+    }
+
     public ResUserDTO getUser(User user) {
         if (user == null) {
             return null;
@@ -155,5 +163,11 @@ public class UserService {
 
     public User save(User user) {
         return this.userRepository.save(user);
+    }
+
+    public User findByCode(String code) {
+        Instant tenMinutesAgo = Instant.now().minusSeconds(600);
+        Optional<User> userOptional = this.userRepository.findByCodeAndExpiredAtAfter(code, tenMinutesAgo);
+        return userOptional.orElse(null);
     }
 }

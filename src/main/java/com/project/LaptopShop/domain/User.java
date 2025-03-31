@@ -59,6 +59,9 @@ public class User {
     private String updatedBy;
     private boolean deleted = false;
     private Instant deletedAt;
+    private String code;
+    private Instant expiredAt;
+    private boolean isActive;
 
     @PrePersist
     public void handleBeforeCreate() {

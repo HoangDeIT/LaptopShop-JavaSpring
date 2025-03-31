@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Kích hoạt tài khoản</title>
+    <meta charset="UTF-8">
+</head>
+
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center;">
+    <div
+        style="max-width: 500px; background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); margin: auto; text-align: center;">
+        <h2 style="color: #333; font-size: 24px; margin-bottom: 20px;">Kích hoạt tài khoản</h2>
+        <p style="color: #555; font-size: 16px; line-height: 1.5;">Nhấn vào nút bên dưới để kích hoạt tài khoản của bạn.
+        </p>
+        <a th:href="@{http://localhost:3000/active-account/{code}(code=${code})}"
+            style="display: inline-block; padding: 14px 28px; background-color: #28a745; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 18px; font-weight: bold; margin-top: 15px; box-shadow: 0px 2px 5px rgba(40, 167, 69, 0.4); cursor: pointer;">Kích
+            hoạt tài khoản</a>
+        <p style="color: #777; font-size: 14px; margin-top: 20px;">Nếu bạn không yêu cầu kích hoạt tài khoản, hãy bỏ qua
+            email này.</p>
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+        <p style="color: #999; font-size: 12px;">© 2025 Công ty của bạn. Mọi quyền được bảo lưu.</p>
+    </div>
+</body>
+
+</html>

@@ -16,6 +16,7 @@ import com.project.LaptopShop.service.ProductService;
 import com.project.LaptopShop.util.error.IdInvalidException;
 
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -25,7 +26,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -87,11 +90,11 @@ public class AProductController {
             @RequestParam("id") long id) throws URISyntaxException, IOException, IdInvalidException {
         Product product = this.productService.getProductById(id);
         this.fileService.createUploadFolder("product");
-        if (file != null) {
+        if (file != null && !file.isEmpty()) {
             String fileName = this.fileService.store(file, "product");
             product.setMainImage(fileName);
         }
-        if (files != null) {
+        if (files != null && !files.isEmpty()) {
             List<String> fileNames = this.fileService.storeMultipleFiles(files, "product");
             List<ProductImages> imagesDB = product.getImages();
             // imagesDB.clear();
@@ -103,4 +106,17 @@ public class AProductController {
         }
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(this.productService.saveProduct(product));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") long id) throws IdInvalidException {
+        this.productService.deleteProduct(id);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<Product> postMethodName(@PathVariable("id") long id) throws IdInvalidException {
+        Product entity = this.productService.rollbackDelete(id);
+        return ResponseEntity.ok(entity);
+    }
+
 }

@@ -67,6 +67,22 @@ public class ProductService {
         return this.productRepository.findById(id).orElseThrow(() -> new IdInvalidException("ID product not found"));
     }
 
+    public void deleteProduct(long id) throws IdInvalidException {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IdInvalidException("ID product not found"));
+        product.setDeleted(true);
+        product.setDeletedAt(Instant.now());
+        this.productRepository.save(product);
+    }
+
+    public Product rollbackDelete(long id) throws IdInvalidException {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IdInvalidException("ID product not found"));
+        product.setDeleted(false);
+        product.setDeletedAt(null);
+        return this.productRepository.save(product);
+    }
+
     @Scheduled(fixedDelay = 20000)
     @Transactional
     public void hardDeleteExpiredUsers() {

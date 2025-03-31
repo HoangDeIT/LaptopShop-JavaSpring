@@ -1,5 +1,10 @@
 package com.project.LaptopShop.controller;
 
+import java.time.Instant;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,22 +17,28 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.project.LaptopShop.domain.User;
+import com.project.LaptopShop.domain.request.ResetPasswordDTO;
 import com.project.LaptopShop.domain.request.SocialNetworkLoginDTO;
 import com.project.LaptopShop.domain.response.RegisterDTO;
 import com.project.LaptopShop.domain.response.ResLoginDTO;
+import com.project.LaptopShop.service.EmailService;
 import com.project.LaptopShop.service.UserService;
 import com.project.LaptopShop.util.constant.RoleEnum;
 import com.project.LaptopShop.util.constant.TypeEnum;
+import com.project.LaptopShop.util.error.IdInvalidException;
 import com.project.LaptopShop.util.SecurityUtil;
 
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -40,26 +51,39 @@ public class AuthController {
     @Value("${password.socical-network}")
     private String passwordSocialNetwork;
     private final SecurityUtil securityUtil;
+    private final EmailService emailService;
 
     public AuthController(PasswordEncoder passwordEncoder, UserService userService,
             AuthenticationManagerBuilder authenticationManagerBuilder,
-            SecurityUtil securityUtil) {
+            SecurityUtil securityUtil, EmailService emailService) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
+        this.emailService = emailService;
     }
 
     @PostMapping("/register")
     public ResponseEntity<RegisterDTO> register(@Valid @RequestBody User user) {
+        User userDB = new User();
+        // kiểm tra xem user nay da tao tai khoan chua
+        userDB = this.userService.getUserByUserNameAndType(user.getUserName(), TypeEnum.SYSTEM);
+        if (userDB != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        userDB = this.userService.getUserByEmailAndType(user.getEmail(), TypeEnum.SYSTEM);
+        if (userDB != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
         user.setRole(RoleEnum.USER);
         user.setType(TypeEnum.SYSTEM);
+        user.setActive(false);
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.registerUser(user));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResLoginDTO> login(@RequestBody JsonNode user) {
+    public ResponseEntity<ResLoginDTO> login(@RequestBody JsonNode user) throws IdInvalidException {
         String userName = user.get("username").asText();
         String password = user.get("password").asText();
         // Nạp input gồm username/password vào Security
@@ -73,6 +97,15 @@ public class AuthController {
         // create token
 
         User currentUser = this.userService.getUserByUserNameAndType(userName, TypeEnum.SYSTEM);
+        if (currentUser.isActive() == false) {
+            String uuid = UUID.randomUUID().toString();
+            currentUser.setCode(uuid);
+            currentUser.setExpiredAt(Instant.now());
+            this.userService.save(currentUser);
+            this.emailService.sendMailForgetPassword(currentUser.getEmail(), "Active account", "active-account", uuid,
+                    currentUser.getUserName());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
         String access_token = this.securityUtil.createAccessToken(authentication, currentUser);
         String refresh_token = this.securityUtil.createRefreshToken(authentication, currentUser);
         ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refresh_token)
@@ -109,6 +142,7 @@ public class AuthController {
             user.setPassword(passwordSocialNetwork);
             user.setRole(RoleEnum.USER);
             user.setType(type);
+            user.setActive(true);
             user.setUserName(socialNetworkLoginDTO.getName());
             user.setImage(socialNetworkLoginDTO.getImage());
             this.userService.registerUser(user);
@@ -141,4 +175,39 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(resLoginDTO);
     }
 
+    @PostMapping("/check-code/{code}")
+    public ResponseEntity<Map<String, Boolean>> postMethodName(@PathVariable("code") String code)
+            throws IdInvalidException {
+        User entity = this.userService.findByCode(code);
+        if (entity == null) {
+            throw new IdInvalidException("User not found");
+        }
+
+        return ResponseEntity.ok().body(Map.of("success", true));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, Boolean>> resetPassword(@RequestBody ResetPasswordDTO resetPasswordDTO)
+            throws IdInvalidException {
+        User entity = this.userService.findByCode(resetPasswordDTO.getCode());
+        if (entity == null) {
+            throw new IdInvalidException("User not found");
+        }
+        entity.setActive(true);
+        entity.setPassword(this.passwordEncoder.encode(resetPasswordDTO.getPassword()));
+        this.userService.save(entity);
+        return ResponseEntity.ok().body(Map.of("success", true));
+    }
+
+    @PostMapping("/active-account/{code}")
+    public ResponseEntity<Map<String, Boolean>> active(@PathVariable("code") String code)
+            throws IdInvalidException {
+        User entity = this.userService.findByCode(code);
+        if (entity == null) {
+            throw new IdInvalidException("User not found");
+        }
+        entity.setActive(true);
+        this.userService.save(entity);
+        return ResponseEntity.ok().body(Map.of("success", true));
+    }
 }

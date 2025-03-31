@@ -44,7 +44,7 @@ public class Product {
     @NotNull
     @DecimalMin(value = "0", inclusive = false, message = "Price phải lớn hơn 0")
     private double price;
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnoreProperties(value = { "product", "createdAt", "updatedAt", "createdBy", "updatedBy", "deleted",
             "deletedAt" })
     private List<ProductImages> images;

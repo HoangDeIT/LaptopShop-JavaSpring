@@ -106,7 +106,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCart(@PathParam("id") long id) {
+    public ResponseEntity<Void> deleteCart(@PathParam("id") long id) throws IdInvalidException {
         this.orderService.deleteOrder(id);
         return ResponseEntity.ok().body(null);
     }
