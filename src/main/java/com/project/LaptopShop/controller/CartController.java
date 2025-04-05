@@ -3,7 +3,6 @@ package com.project.LaptopShop.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.LaptopShop.domain.Cart;
-import com.project.LaptopShop.domain.OrderDetail;
 import com.project.LaptopShop.domain.Product;
 import com.project.LaptopShop.domain.User;
 import com.project.LaptopShop.service.CartService;

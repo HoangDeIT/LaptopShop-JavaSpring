@@ -11,44 +11,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.LaptopShop.domain.Cart;
 import com.project.LaptopShop.domain.Order;
 import com.project.LaptopShop.domain.OrderDetail;
-import com.project.LaptopShop.domain.Product;
-import com.project.LaptopShop.domain.User;
-import com.project.LaptopShop.domain.request.OrderDTO;
+
 import com.project.LaptopShop.domain.response.EmailOrder;
 import com.project.LaptopShop.domain.response.ResultPaginationDTO;
-import com.project.LaptopShop.service.CartService;
 import com.project.LaptopShop.service.EmailService;
 import com.project.LaptopShop.service.OrderService;
-import com.project.LaptopShop.service.ProductService;
-import com.project.LaptopShop.service.UserService;
-import com.project.LaptopShop.util.SecurityUtil;
+
 import com.project.LaptopShop.util.constant.StatusEnum;
-import com.project.LaptopShop.util.constant.TypeEnum;
+
 import com.project.LaptopShop.util.error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;
 
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/admin/orders")
 @AllArgsConstructor
 public class AOrderController {
-    private final UserService userService;
+
     private final OrderService orderService;
-    private final ProductService productService;
-    private final CartService cartService;
+
     private final EmailService emailService;
 
     // @PostMapping

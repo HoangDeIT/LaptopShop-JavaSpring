@@ -3,7 +3,6 @@ package com.project.LaptopShop.service;
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -20,7 +19,6 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class EmailService {
-    private final MailSender mailSender;
     private final JavaMailSender javaJavaMailSender;
     private final TemplateEngine templateEngine;
 

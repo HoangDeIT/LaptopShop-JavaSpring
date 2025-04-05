@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.LaptopShop.domain.Product;
-import com.project.LaptopShop.domain.User;
 import com.project.LaptopShop.domain.response.ResultPaginationDTO;
 import com.project.LaptopShop.repository.ProductRepository;
 import com.project.LaptopShop.util.error.IdInvalidException;

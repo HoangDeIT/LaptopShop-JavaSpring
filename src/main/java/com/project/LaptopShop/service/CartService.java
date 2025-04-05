@@ -8,12 +8,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.project.LaptopShop.domain.Cart;
-import com.project.LaptopShop.domain.Factory;
 import com.project.LaptopShop.domain.Product;
 import com.project.LaptopShop.domain.User;
 import com.project.LaptopShop.domain.response.ResultPaginationDTO;
 import com.project.LaptopShop.repository.CartRepository;
-import com.project.LaptopShop.repository.FactoryRepository;
 import com.project.LaptopShop.util.SecurityUtil;
 import com.project.LaptopShop.util.constant.TypeEnum;
 import com.project.LaptopShop.util.error.IdInvalidException;

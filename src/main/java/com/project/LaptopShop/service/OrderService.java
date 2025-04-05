@@ -11,13 +11,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.project.LaptopShop.domain.Factory;
 import com.project.LaptopShop.domain.Order;
-import com.project.LaptopShop.domain.Product;
 import com.project.LaptopShop.domain.User;
-import com.project.LaptopShop.domain.response.ResUserDTO;
 import com.project.LaptopShop.domain.response.ResultPaginationDTO;
-import com.project.LaptopShop.repository.OrderDetailRepository;
 import com.project.LaptopShop.repository.OrderRepository;
 import com.project.LaptopShop.util.SecurityUtil;
 import com.project.LaptopShop.util.constant.StatusEnum;
@@ -31,16 +27,15 @@ import com.turkraft.springfilter.parser.node.FilterNode;
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;;
-    private final OrderDetailRepository orderDetailRepository;
     private final FilterParser filterParser;
     private final FilterSpecificationConverter filterSpecificationConverter;
     private final UserService userService;
 
-    public OrderService(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository,
+    public OrderService(OrderRepository orderRepository,
             FilterParser filterParser, FilterSpecificationConverter filterSpecificationConverter,
             UserService userService) {
         this.orderRepository = orderRepository;
-        this.orderDetailRepository = orderDetailRepository;
+
         this.filterParser = filterParser;
         this.filterSpecificationConverter = filterSpecificationConverter;
         this.userService = userService;

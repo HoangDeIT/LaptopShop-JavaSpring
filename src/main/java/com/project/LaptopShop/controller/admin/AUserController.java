@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.LaptopShop.domain.User;
 import com.project.LaptopShop.domain.response.RegisterDTO;
 import com.project.LaptopShop.domain.response.ResUserDTO;
-import com.project.LaptopShop.domain.response.RestResponse;
 import com.project.LaptopShop.domain.response.ResultPaginationDTO;
 import com.project.LaptopShop.service.UserService;
 import com.project.LaptopShop.util.constant.TypeEnum;

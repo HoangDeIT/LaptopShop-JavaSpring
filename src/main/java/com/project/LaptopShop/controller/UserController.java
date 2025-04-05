@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.LaptopShop.domain.User;
-import com.project.LaptopShop.domain.response.RegisterDTO;
 import com.project.LaptopShop.service.FileService;
 import com.project.LaptopShop.service.UserService;
 import com.project.LaptopShop.util.SecurityUtil;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/v1/user")

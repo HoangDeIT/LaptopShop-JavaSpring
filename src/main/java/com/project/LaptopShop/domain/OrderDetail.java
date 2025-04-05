@@ -2,7 +2,6 @@ package com.project.LaptopShop.domain;
 
 import java.time.Instant;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.LaptopShop.util.SecurityUtil;
 

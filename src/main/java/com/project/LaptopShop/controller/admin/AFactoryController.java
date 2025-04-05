@@ -2,7 +2,6 @@ package com.project.LaptopShop.controller.admin;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,8 +11,6 @@ import com.project.LaptopShop.service.FactoryService;
 import com.project.LaptopShop.service.FileService;
 import com.project.LaptopShop.util.error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;
-
-import jakarta.validation.Valid;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -26,7 +23,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/v1/admin/factory")
