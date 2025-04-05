@@ -92,4 +92,14 @@ public class ProductService {
             this.productRepository.deleteAll(productDelete);
         }
     }
+
+    public Product handleBuyProduct(long id, long quantity) throws IdInvalidException {
+        Product product = this.productRepository.findById(id)
+                .orElseThrow(() -> new IdInvalidException("ID product not found"));
+        product.setQuantity(product.getQuantity() - quantity);
+        if (product.getQuantity() < 0)
+            throw new IdInvalidException("Quantity not enough");
+        product.setSold(product.getSold() + quantity);
+        return this.productRepository.save(product);
+    }
 }

@@ -7,8 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.LaptopShop.domain.Product;
 import com.project.LaptopShop.domain.ProductImages;
-import com.project.LaptopShop.domain.User;
-import com.project.LaptopShop.domain.response.RegisterDTO;
 import com.project.LaptopShop.service.FileService;
 import com.project.LaptopShop.service.ProductImagesService;
 import com.project.LaptopShop.service.ProductService;
@@ -16,13 +14,10 @@ import com.project.LaptopShop.service.ProductService;
 import com.project.LaptopShop.util.error.IdInvalidException;
 
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -118,5 +113,4 @@ public class AProductController {
         Product entity = this.productService.rollbackDelete(id);
         return ResponseEntity.ok(entity);
     }
-
 }

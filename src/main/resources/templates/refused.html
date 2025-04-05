@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Đơn hàng bị từ chối</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4;">
+    <div
+        style="max-width: 600px; background: #fff; margin: 20px auto; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+        <div
+            style="text-align: center; padding: 10px 0; font-size: 20px; font-weight: bold; color: #fff; border-radius: 10px 10px 0 0; background: #dc3545;">
+            Đơn hàng của bạn đã bị từ chối!
+        </div>
+
+        <div style="padding: 20px; font-size: 16px; line-height: 1.5; color: #333;">
+            <p>Xin chào <b>[[${content.name}]]</b>,</p>
+            <p>Rất tiếc, đơn hàng của bạn đã bị từ chối vì lý do sau:</p>
+            <p style="color: #d9534f; font-weight: bold;">[[${content.message}]]</p>
+
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid #ddd; padding: 8px; background: #f8f9fa; text-align: left;">Sản
+                            phẩm</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; background: #f8f9fa; text-align: left;">Số
+                            lượng</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; background: #f8f9fa; text-align: left;">Giá
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${content.orderDetails}">
+                        <td style="border: 1px solid #ddd; padding: 8px;">[[${item.product}]]</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">[[${item.quantity}]]</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">[[${item.price}]] USD</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="text-align: right; font-size: 18px; font-weight: bold; color: #d9534f; margin-top: 10px;">Tổng
+                tiền: [[${content.total}]] USD</p>
+
+            <p>Nếu bạn có thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
+                <a href="mailto:support@shop.com" style="color: #007bff; text-decoration: none;">support@shop.com</a>
+            </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 14px; color: #666;">
+            &copy; 2025 Cửa hàng ABC. All rights reserved.
+        </div>
+    </div>
+</body>
+
+</html>

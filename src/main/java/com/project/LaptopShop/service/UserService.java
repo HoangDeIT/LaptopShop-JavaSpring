@@ -170,4 +170,12 @@ public class UserService {
         Optional<User> userOptional = this.userRepository.findByCodeAndExpiredAtAfter(code, tenMinutesAgo);
         return userOptional.orElse(null);
     }
+
+    public User findById(long id) {
+        return this.userRepository.findById(id).orElse(null);
+    }
+
+    public double getTotalUser() {
+        return this.userRepository.count();
+    }
 }

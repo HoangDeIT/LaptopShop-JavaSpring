@@ -8,8 +8,10 @@ import com.project.LaptopShop.domain.OrderDetail;
 import com.project.LaptopShop.domain.Product;
 import com.project.LaptopShop.domain.User;
 import com.project.LaptopShop.domain.request.OrderDTO;
+import com.project.LaptopShop.domain.response.EmailOrder;
 import com.project.LaptopShop.domain.response.ResultPaginationDTO;
 import com.project.LaptopShop.service.CartService;
+import com.project.LaptopShop.service.EmailService;
 import com.project.LaptopShop.service.OrderService;
 import com.project.LaptopShop.service.ProductService;
 import com.project.LaptopShop.service.UserService;
@@ -25,8 +27,6 @@ import jakarta.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
@@ -41,17 +41,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/v1/orders")
 public class OrderController {
     public OrderController(UserService userService, OrderService orderService, ProductService productService,
-            CartService cartService) {
+            CartService cartService, EmailService emailService) {
         this.userService = userService;
         this.orderService = orderService;
         this.productService = productService;
         this.cartService = cartService;
+        this.emailService = emailService;
     }
 
     private final UserService userService;
     private final OrderService orderService;
     private final ProductService productService;
     private final CartService cartService;
+    private final EmailService emailService;
+
+    public EmailOrder OrderToEmailOrder(Order order) {
+        EmailOrder emailOrder = new EmailOrder();
+        emailOrder.setAddress(order.getReceiverAddress());
+        emailOrder.setPhone(order.getReceiverPhone());
+        emailOrder.setName(order.getUser().getUserName());
+        emailOrder.setTotal(order.getTotalPrice());
+        List<EmailOrder.OrderDetail> orderDetails = new ArrayList<>();
+        for (OrderDetail orderDetail : order.getOrderDetails()) {
+            EmailOrder.OrderDetail emailOrderDetail = new EmailOrder.OrderDetail();
+            emailOrderDetail.setProduct(orderDetail.getProduct().getName());
+            emailOrderDetail.setPrice(orderDetail.getProduct().getPrice());
+            emailOrderDetail.setQuantity(orderDetail.getQuantity());
+            orderDetails.add(emailOrderDetail);
+        }
+        emailOrder.setOrderDetails(orderDetails);
+        return emailOrder;
+    }
 
     @PostMapping
     @Transactional
@@ -75,6 +95,7 @@ public class OrderController {
             orderDetail.setOrder(order);
             orderDetail.setProduct(product);
             orderDetail.setQuantity(cart.getQuantity());
+            this.productService.handleBuyProduct(product.getId(), cart.getQuantity());
             orderDetails.add(orderDetail);
             totalPrice += product.getPrice() * cart.getQuantity();
         }
@@ -89,6 +110,9 @@ public class OrderController {
                 user.getCarts().remove(this.cartService.getCartById(cart.getId()));
             }
         }
+        // send email
+        EmailOrder emailOrder = OrderToEmailOrder(entity);
+        this.emailService.sendMessageOrder(user.getEmail(), "Đặt hàng thành công ", "order", emailOrder);
         this.userService.save(user);
         return ResponseEntity.ok(entity);
     }
@@ -110,4 +134,5 @@ public class OrderController {
         this.orderService.deleteOrder(id);
         return ResponseEntity.ok().body(null);
     }
+
 }

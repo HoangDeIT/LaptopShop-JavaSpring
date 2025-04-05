@@ -39,6 +39,16 @@ public class AUserController {
 
     @PostMapping
     public ResponseEntity<RegisterDTO> createUser(@Valid @RequestBody User user) {
+        User userDB = new User();
+        // kiểm tra xem user nay da tao tai khoan chua
+        userDB = this.userService.getUserByUserNameAndType(user.getUserName(), TypeEnum.SYSTEM);
+        if (userDB != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        userDB = this.userService.getUserByEmailAndType(user.getEmail(), TypeEnum.SYSTEM);
+        if (userDB != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
         user.setType(TypeEnum.SYSTEM);
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.registerUser(user));

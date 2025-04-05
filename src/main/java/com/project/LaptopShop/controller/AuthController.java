@@ -79,6 +79,12 @@ public class AuthController {
         user.setType(TypeEnum.SYSTEM);
         user.setActive(false);
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        String uuid = UUID.randomUUID().toString();
+        user.setCode(uuid);
+        user.setExpiredAt(Instant.now());
+        this.emailService.sendMailForgetPasswordAndActivePassword(user.getEmail(), "Active account",
+                "active-account", uuid,
+                user.getUserName());
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.registerUser(user));
     }
 
@@ -102,7 +108,8 @@ public class AuthController {
             currentUser.setCode(uuid);
             currentUser.setExpiredAt(Instant.now());
             this.userService.save(currentUser);
-            this.emailService.sendMailForgetPassword(currentUser.getEmail(), "Active account", "active-account", uuid,
+            this.emailService.sendMailForgetPasswordAndActivePassword(currentUser.getEmail(), "Active account",
+                    "active-account", uuid,
                     currentUser.getUserName());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
@@ -121,6 +128,7 @@ public class AuthController {
         userLogin.setId(currentUser.getId());
         userLogin.setUserName(userName);
         userLogin.setRole(currentUser.getRole());
+        userLogin.setType(currentUser.getType());
         resLoginDTO.setUser(userLogin);
         return ResponseEntity.status(HttpStatus.CREATED).header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(resLoginDTO);
@@ -145,6 +153,7 @@ public class AuthController {
             user.setActive(true);
             user.setUserName(socialNetworkLoginDTO.getName());
             user.setImage(socialNetworkLoginDTO.getImage());
+
             this.userService.registerUser(user);
             isNewUser = true;
         }
@@ -170,6 +179,8 @@ public class AuthController {
         userLogin.setId(currentUser.getId());
         userLogin.setUserName(currentUser.getUserName());
         userLogin.setRole(currentUser.getRole());
+        userLogin.setType(currentUser.getType());
+
         resLoginDTO.setUser(userLogin);
         return ResponseEntity.status(isNewUser ? HttpStatus.CREATED : HttpStatus.OK)
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(resLoginDTO);

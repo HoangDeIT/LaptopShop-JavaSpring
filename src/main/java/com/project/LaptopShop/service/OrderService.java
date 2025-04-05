@@ -1,15 +1,19 @@
 package com.project.LaptopShop.service;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.LaptopShop.domain.Factory;
 import com.project.LaptopShop.domain.Order;
+import com.project.LaptopShop.domain.Product;
 import com.project.LaptopShop.domain.User;
 import com.project.LaptopShop.domain.response.ResUserDTO;
 import com.project.LaptopShop.domain.response.ResultPaginationDTO;
@@ -95,6 +99,9 @@ public class OrderService {
     }
 
     public ResultPaginationDTO fetchOrderAdmin(Pageable pageable, Specification<Order> spec) {
+        FilterNode node = filterParser.parse("deleted='" + false + "'");
+        FilterSpecification<Order> spec1 = filterSpecificationConverter.convert(node);
+        spec = spec.and(spec1);
         Page<Order> pageOrder = this.orderRepository.findAll(spec, pageable);
         int totalPages = pageOrder.getTotalPages();
         int pageNumber = Math.min(pageable.getPageNumber(), totalPages - 1);
@@ -121,5 +128,25 @@ public class OrderService {
 
     public long pendingCount() {
         return this.orderRepository.countByStatus(StatusEnum.PENDING);
+    }
+
+    public double getTotalRevenue() {
+        return this.orderRepository.getTotalRevenue();
+    }
+
+    public double getTotalRevenueLastMonth() {
+        Instant startDate = Instant.now().minus(Duration.ofDays(30));
+        Instant endDate = Instant.now();
+        return this.orderRepository.getTotalRevenueBetweenDates(startDate, endDate);
+    }
+
+    @Scheduled(fixedDelay = 20000)
+    @Transactional
+    public void hardDeleteExpiredOrders() {
+        Instant cutoffTime = Instant.now().minusSeconds(20);
+        List<Order> orderDelete = this.orderRepository.findByDeletedTrueAndDeletedAtBefore(cutoffTime);
+        if (!orderDelete.isEmpty()) {
+            this.orderRepository.deleteAll(orderDelete);
+        }
     }
 }

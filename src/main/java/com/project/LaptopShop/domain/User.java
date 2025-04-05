@@ -20,6 +20,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -36,9 +37,10 @@ public class User {
     private String userName;
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters")
-    @JsonIgnore(value = true)
+    @JsonIgnore(value = false)
     private String password;
     @NotBlank(message = "Password is required")
+    @Email(message = "Invalid email address")
     private String email;
     @Enumerated(EnumType.STRING)
     private RoleEnum role;

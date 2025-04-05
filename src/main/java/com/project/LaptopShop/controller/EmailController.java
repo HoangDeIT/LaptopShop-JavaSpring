@@ -53,7 +53,8 @@ public class EmailController {
         userDB.setCode(uuid);
         userDB.setExpiredAt(Instant.now());
         this.userService.save(userDB);
-        this.emailService.sendMailForgetPassword(userDB.getEmail(), "Reset password", "reset-password", uuid,
+        this.emailService.sendMailForgetPasswordAndActivePassword(userDB.getEmail(), "Reset password", "reset-password",
+                uuid,
                 userDB.getEmail());
         // Trả về một đối tượng JSON hợp lệ
         return ResponseEntity.ok(userDB);

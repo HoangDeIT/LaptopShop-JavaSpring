@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import com.project.LaptopShop.domain.response.EmailOrder;
+
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
@@ -38,7 +40,8 @@ public class EmailService {
     }
 
     @Async
-    public void sendMailForgetPassword(String to, String subject, String templateName, String code, String username) {
+    public void sendMailForgetPasswordAndActivePassword(String to, String subject, String templateName, String code,
+            String username) {
         Context context = new Context();
         context.setVariable("code", code);
         context.setVariable("username", username);
@@ -46,13 +49,12 @@ public class EmailService {
         this.sendEmailSync(to, subject, content, false, true);
     }
 
-    // @Async
-    // public void sendEmailActiveAccount(String to, String subject, String
-    // templateName, String code, Object value) {
-    // Context context = new Context();
-    // context.setVariable("name", name);
-    // context.setVariable("jobs", value);
-    // String content = this.templateEngine.process(templateName, context);
-    // this.sendEmailSync(to, subject, content, false, true);
-    // }
+    @Async
+    public void sendMessageOrder(String to, String subject, String templateName, EmailOrder emailOrder) {
+        Context context = new Context();
+        context.setVariable("content", emailOrder);
+
+        String content = this.templateEngine.process(templateName, context);
+        this.sendEmailSync(to, subject, content, false, true);
+    }
 }

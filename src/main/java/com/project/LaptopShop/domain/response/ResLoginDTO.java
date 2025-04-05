@@ -2,6 +2,7 @@ package com.project.LaptopShop.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.LaptopShop.util.constant.RoleEnum;
+import com.project.LaptopShop.util.constant.TypeEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class ResLoginDTO {
         private String email;
         private String userName;
         private RoleEnum role;
+        private TypeEnum type;
     }
 
 }

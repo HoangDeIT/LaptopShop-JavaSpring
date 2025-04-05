@@ -57,9 +57,8 @@ public class Product {
     @NotBlank(message = "Không được để trống")
     private String shortDesc;
 
-    @NotBlank
     @Min(value = 0, message = "Số lượng phải lớn 0")
-    private String quantity;
+    private long quantity;
     private long sold;
     @ManyToOne
     @JoinColumn(name = "factory_id")
